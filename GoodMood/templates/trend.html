@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>📈 Динамика настроения за неделю</h1>
+
+{% if dates %}
+    <canvas id="trendChart" width="600" height="300"></canvas>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+    const ctx = document.getElementById('trendChart').getContext('2d');
+
+    const dates = {{ dates | default([]) | tojson }};
+    const scores = {{ scores | default([]) | tojson }};
+    const colors = {{ colors | default([]) | tojson }};
+
+    const moodLabels = {
+        1: "Тяжело",
+        2: "Грустно",
+        3: "Тревожно",
+        4: "Спокойно",
+        5: "Радостно"
+    };
+
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: dates,
+            datasets: [{
+                data: scores,
+                borderColor: '#d18a33',
+                backgroundColor: 'rgba(241, 186, 88, 0.25)',
+                fill: true,
+                pointRadius: 8,
+                pointHoverRadius: 10,
+                pointBackgroundColor: colors,
+                tension: 0.35
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    min: 0.5,
+                    max: 5.5,
+                    ticks: {
+                        stepSize: 1,
+                        callback: val => moodLabels[val] || ''
+                    }
+                }
+            },
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: function(ctx) {
+                            return moodLabels[ctx.parsed.y] || '';
+                        }
+                    }
+                }
+            }
+        }
+    });
+    </script>
+{% else %}
+    <p>Пока нет данных за последние 7 дней 😌</p>
+{% endif %}
+
+<a href="{{ url_for('index') }}" class="back">← Назад</a>
+{% endblock %}

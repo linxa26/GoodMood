@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Как ты себя чувствуешь сегодня?</h1>
+
+<form method="POST">
+    <div class="mood-grid">
+        {% for key, mood in moods.items() %}
+        <button
+            type="submit"
+            name="mood"
+            value="{{ key }}"
+            class="mood-btn {% if saved_mood == key %}active{% endif %}">
+
+            <!-- цветной кружок со смайлом -->
+            <span class="emoji-bg {{ key }}">{{ mood.emoji }}</span>
+
+            <!-- подпись под смайлом -->
+            <span class="label">{{ mood.title }}</span>
+        </button>
+        {% endfor %}
+    </div>
+
+    <textarea name="note" placeholder="Хочешь добавить комментарий? 😊"></textarea>
+</form>
+
+<a href="{{ url_for('show_calendar') }}" class="calendar-btn">📅 Календарь настроения</a>
+<a href="{{ url_for('stats') }}" class="stats-btn">📊 Статистика</a>
+<a href="{{ url_for('mood_trend') }}" class="trend-btn">📈 Динамика</a>
+<hr>
+
+<div class="backup-section">
+  <a href="{{ url_for('export_data') }}" class="backup-btn">💾 Экспорт</a>
+
+  <form action="{{ url_for('import_data') }}" method="POST" enctype="multipart/form-data" class="import-form">
+      <label class="backup-btn">
+          📂 Импорт
+          <input type="file" name="file" accept=".json" onchange="this.form.submit()" hidden>
+      </label>
+  </form>
+</div>
+{% endblock %}

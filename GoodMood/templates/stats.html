@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>📊 Статистика — {{ month_name }} {{ year }}</h1>
+
+<div class="chart-container">
+    {% if values|length == 0 %}
+        <p>Нет данных за этот месяц 😌</p>
+    {% else %}
+        <canvas id="moodChart"></canvas>
+    {% endif %}
+</div>
+
+<div class="nav">
+  <a href="{{ url_for('stats', year=prev_year, month=prev_month) }}">← Пред</a>
+  <a href="{{ url_for('stats', year=next_year, month=next_month) }}">След →</a>
+</div>
+
+<a href="{{ url_for('index') }}" class="back">← Назад</a>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% if values|length > 0 %}
+<script>
+const ctx = document.getElementById('moodChart');
+new Chart(ctx, {
+  type: 'pie',
+  data: {
+    labels: {{ labels|tojson }},
+    datasets: [{
+      data: {{ values|tojson }},
+      backgroundColor: {{ colors|tojson }}
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { position: 'bottom' }
+    }
+  }
+});
+</script>
+{% endif %}
+{% endblock %}
