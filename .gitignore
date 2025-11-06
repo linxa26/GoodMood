@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environment
+venv/
+env/
+
+# SQLite database
+*.db
+*.sqlite3
+
+# JSON exports or logs
+*.json
+*.log
+
+# IDE / OS junk
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
