@@ -8,7 +8,20 @@ from werkzeug.security import generate_password_hash, check_password_hash
 app = Flask(__name__)
 app.secret_key = 'my_super_secret_key'
 
-DB_PATH = os.path.join(os.path.dirname(__file__), 'moodpress.db')
+DB_PATH = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'moodpress.db')
+
+
+# Создание базы и таблицы, если их нет
+with sqlite3.connect(DB_PATH) as conn:
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            email TEXT UNIQUE NOT NULL,
+            password TEXT NOT NULL
+        )
+    """)
+    conn.commit()
 
 MOODS = {
     "happy": {"emoji": "😊", "title": "Радостно", "color": "#FFC857"},
@@ -232,8 +245,6 @@ def steps():
 
     # 👇 фон как на главной
     return render_template('steps.html', rows=rows, page_class="cowboy")
-
-
 
 
 @app.route('/sleep', methods=['GET', 'POST'])
