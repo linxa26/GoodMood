@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>🦶 Ввод шагов</h1>
+
+<form method="POST">
+    <label>Дата: <input type="date" name="date" required></label><br>
+    <label>Шагов: <input type="number" name="count" required></label><br>
+    <button type="submit">Сохранить</button>
+</form>
+
+<h2>История шагов</h2>
+<ul>
+    {% for date, count in rows %}
+        <li>{{ date }} — {{ count }} шагов</li>
+    {% endfor %}
+</ul>
+
+<a href="{{ url_for('index') }}" class="back">← Назад</a>
+{% endblock %}

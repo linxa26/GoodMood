@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>📈 Динамика настроения</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            background-image: url("/static/images/cowboy_bg.png");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            font-family: 'Georgia', serif;
+            color: #3a2c0a;
+        }
+
+        h1 {
+            text-align: center;
+            color: #fff7e6;
+            padding-top: 30px;
+            text-shadow: 1px 1px 3px #000;
+        }
+
+        canvas {
+            display: block;
+            margin: 30px auto;
+            background-color: rgba(255, 255, 255, 0.85);
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        /* ===== Кнопка "Назад" ===== */
+        .back-btn-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+            margin-bottom: 50px;
+        }
+
+        a.back {
+            background: linear-gradient(180deg, #f8e0b0, #d2a75e);
+            color: #3b2605;
+            border: 2px solid #5c3d1b;
+            border-radius: 10px;
+            padding: 10px 22px;
+            font-family: 'Georgia', serif;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            text-decoration: none;
+            transition: all 0.25s ease-in-out;
+        }
+
+        a.back:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.15);
+            box-shadow: 0 0 10px rgba(241, 186, 88, 0.6);
+        }
+    </style>
+</head>
+<body>
+    <h1>📈 Динамика настроения</h1>
+
+    <canvas id="moodChart" width="900" height="400"></canvas>
+
+    <script>
+        const labels = {{ labels|safe }};
+        const moods = {{ mood_values|safe }};
+        const steps = {{ step_values|safe }};
+        const sleep = {{ sleep_values|safe }};
+
+        const moodScale = {
+            "Радостно": 5,
+            "Спокойно": 4,
+            "Тревожно": 3,
+            "Грустно": 2,
+            "Тяжело": 1
+        };
+
+        const moodNumeric = moods.map(m => moodScale[m] || 0);
+
+        const ctx = document.getElementById('moodChart').getContext('2d');
+        const chart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Настроение (1–5)',
+                        data: moodNumeric,
+                        type: 'line',
+                        yAxisID: 'y',
+                        borderColor: '#FFA500',
+                        backgroundColor: '#FFA50033',
+                        tension: 0.2
+                    },
+                    {
+                        label: 'Шаги',
+                        data: steps,
+                        yAxisID: 'y1',
+                        backgroundColor: '#3b82f6',
+                    },
+                    {
+                        label: 'Сон (часы)',
+                        data: sleep,
+                        yAxisID: 'y2',
+                        backgroundColor: '#a855f7',
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                interaction: {
+                    mode: 'index',
+                    intersect: false,
+                },
+                stacked: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Зависимость настроения от шагов и сна'
+                    }
+                },
+                scales: {
+                    y: {
+                        type: 'linear',
+                        position: 'left',
+                        title: { display: true, text: 'Настроение' },
+                        min: 0,
+                        max: 5,
+                        ticks: { stepSize: 1 }
+                    },
+                    y1: {
+                        type: 'linear',
+                        position: 'right',
+                        title: { display: true, text: 'Шаги' },
+                        grid: { drawOnChartArea: false }
+                    },
+                    y2: {
+                        type: 'linear',
+                        position: 'right',
+                        offset: true,
+                        title: { display: true, text: 'Сон (часы)' },
+                        grid: { drawOnChartArea: false }
+                    }
+                }
+            }
+        });
+    </script>
+
+    <div class="back-btn-container">
+        <a href="{{ url_for('index') }}" class="back">← Назад</a>
+    </div>
+</body>
+</html>

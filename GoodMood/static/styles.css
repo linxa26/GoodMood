@@ -238,3 +238,34 @@ button, a {
 .sad     { background-color: #1E90FF; color: #fff; } /* синий */
 .anxious { background-color: #8A2BE2; color: #fff; } /* фиолетовый */
 .hard    { background-color: #FF4C4C; color: #fff; } /* красный */
+
+/* Кнопка "Назад" — всегда ковбойская, даже для visited */
+.back-btn-container{
+  display:flex;
+  justify-content:center;
+  margin:24px 0 32px;
+}
+
+a.back,
+a.back:link,
+a.back:visited,
+a.back:active,
+a.back:hover{
+  display:inline-block;
+  background: linear-gradient(180deg, #f8e0b0, #d2a75e);
+  color:#3b2605 !important;             /* перебиваем фиолетовый visited */
+  border:2px solid #5c3d1b;
+  border-radius:10px;
+  padding:10px 20px;
+  font-family:'Georgia', serif;
+  font-weight:bold;
+  text-decoration:none !important;      /* убираем подчёркивание */
+  box-shadow:0 4px 6px rgba(0,0,0,0.3);
+  transition:transform .2s, filter .2s, box-shadow .2s;
+}
+
+a.back:hover{
+  transform: translateY(-2px);
+  filter: brightness(1.12);
+  box-shadow:0 0 10px rgba(241,186,88,.6);
+}

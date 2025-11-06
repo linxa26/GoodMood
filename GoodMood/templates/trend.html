@@ -64,5 +64,7 @@
     <p>Пока нет данных за последние 7 дней 😌</p>
 {% endif %}
 
-<a href="{{ url_for('index') }}" class="back">← Назад</a>
+<div class="back-btn-container">
+    <a href="{{ url_for('index') }}" class="back">← Назад</a>
+</div>
 {% endblock %}
