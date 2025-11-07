@@ -37,6 +37,11 @@ MONTHS_RU = [
 
 
 def init_db():
+    if not os.path.exists(DB_PATH):
+        print("📦 База не найдена, создаём новую...")
+    else:
+        print("✅ База уже существует:", DB_PATH)
+
     with sqlite3.connect(DB_PATH) as conn:
         conn.execute('''
             CREATE TABLE IF NOT EXISTS users (
@@ -77,9 +82,6 @@ def init_db():
 
         conn.commit()
         print("🧱 Используем базу данных:", DB_PATH)
-
-
-init_db()
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -388,6 +390,11 @@ def stats():
         page_class="stats"
     )
 
+
+# ✅ Инициализация базы при запуске
+if not os.path.exists(DB_PATH):
+    print("📦 База не найдена, создаём новую...")
+init_db()
 
 if __name__ == '__main__':
     app.run(debug=True)
