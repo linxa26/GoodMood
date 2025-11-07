@@ -168,9 +168,13 @@ def index():
 
     today = datetime.date.today().isoformat()
     conn = sqlite3.connect(DB_PATH)
-    row = conn.execute('SELECT mood, note FROM moods WHERE date=? AND user_id=?', (today, user_id)).fetchone()
-
-    conn.close()
+    try:
+        row = conn.execute('SELECT mood, note FROM moods WHERE date=? AND user_id=?', (today, user_id)).fetchone()
+    except Exception as e:
+        print("⚠️ Ошибка при SELECT:", e)
+        row = None
+    finally:
+        conn.close()
 
     saved_mood = row[0] if row else None
     return render_template('index.html', moods=MOODS, saved_mood=saved_mood, page_class="cowboy")
