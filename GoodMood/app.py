@@ -8,7 +8,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 app = Flask(__name__)
 app.secret_key = 'my_super_secret_key'
 
-DB_PATH = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'moodpress_new.db')
+DB_PATH = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'moodpress_final.db')
 
 # Создание базы и таблицы, если их нет
 with sqlite3.connect(DB_PATH) as conn:
@@ -76,7 +76,7 @@ def init_db():
         ''')
 
         conn.commit()
-        print("✅ moodpress_new.db создана с таблицами!")
+        print("🧱 Используем базу данных:", DB_PATH)
 
 
 init_db()
@@ -169,6 +169,7 @@ def index():
     today = datetime.date.today().isoformat()
     conn = sqlite3.connect(DB_PATH)
     row = conn.execute('SELECT mood, note FROM moods WHERE date=? AND user_id=?', (today, user_id)).fetchone()
+
     conn.close()
 
     saved_mood = row[0] if row else None
