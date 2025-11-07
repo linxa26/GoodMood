@@ -8,7 +8,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 app = Flask(__name__)
 app.secret_key = 'my_super_secret_key'
 
-DB_PATH = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'moodpress.db')
+DB_PATH = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'moodpress_new.db')
 
 # Создание базы и таблицы, если их нет
 with sqlite3.connect(DB_PATH) as conn:
@@ -37,13 +37,7 @@ MONTHS_RU = [
 
 
 def init_db():
-    # 🧹 удалить старую базу, если осталась старая без таблиц
-    if os.path.exists(DB_PATH):
-        os.remove(DB_PATH)
-        print("🧩 Старый moodpress.db удалён — создаём заново!")
-
     with sqlite3.connect(DB_PATH) as conn:
-        # Таблица пользователей
         conn.execute('''
             CREATE TABLE IF NOT EXISTS users (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -53,7 +47,6 @@ def init_db():
             )
         ''')
 
-        # Таблица настроений
         conn.execute('''
             CREATE TABLE IF NOT EXISTS moods (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -64,7 +57,6 @@ def init_db():
             )
         ''')
 
-        # Таблица шагов
         conn.execute('''
             CREATE TABLE IF NOT EXISTS steps (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -74,7 +66,6 @@ def init_db():
             )
         ''')
 
-        # Таблица сна
         conn.execute('''
             CREATE TABLE IF NOT EXISTS sleep (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -85,8 +76,7 @@ def init_db():
         ''')
 
         conn.commit()
-        print("✅ moodpress.db создан заново с таблицами!")
-
+        print("✅ moodpress_new.db создана с таблицами!")
 
 
 init_db()
@@ -396,4 +386,3 @@ def stats():
 
 if __name__ == '__main__':
     app.run(debug=True)
-
