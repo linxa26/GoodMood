@@ -384,6 +384,17 @@ def stats():
 
 
 if __name__ == '__main__':
-    init_db()  # создаёт таблицы, если нет
+    with sqlite3.connect(DB_PATH) as conn:
+        conn.execute('''
+            CREATE TABLE IF NOT EXISTS moods (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                date TEXT NOT NULL,
+                mood TEXT NOT NULL,
+                note TEXT,
+                user_id INTEGER NOT NULL
+            )
+        ''')
+        conn.commit()
     app.run(debug=True)
+
 
