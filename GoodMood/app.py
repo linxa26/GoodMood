@@ -37,6 +37,11 @@ MONTHS_RU = [
 
 
 def init_db():
+    # 🧹 удалить старую базу, если осталась старая без таблиц
+    if os.path.exists(DB_PATH):
+        os.remove(DB_PATH)
+        print("🧩 Старый moodpress.db удалён — создаём заново!")
+
     with sqlite3.connect(DB_PATH) as conn:
         # Таблица пользователей
         conn.execute('''
@@ -80,6 +85,12 @@ def init_db():
         ''')
 
         conn.commit()
+        print("✅ moodpress.db создан заново с таблицами!")
+
+
+
+init_db()
+
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -384,17 +395,5 @@ def stats():
 
 
 if __name__ == '__main__':
-    with sqlite3.connect(DB_PATH) as conn:
-        conn.execute('''
-            CREATE TABLE IF NOT EXISTS moods (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                date TEXT NOT NULL,
-                mood TEXT NOT NULL,
-                note TEXT,
-                user_id INTEGER NOT NULL
-            )
-        ''')
-        conn.commit()
     app.run(debug=True)
-
 
