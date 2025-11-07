@@ -10,7 +10,6 @@ app.secret_key = 'my_super_secret_key'
 
 DB_PATH = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'moodpress.db')
 
-
 # Создание базы и таблицы, если их нет
 with sqlite3.connect(DB_PATH) as conn:
     conn.execute("""
@@ -38,47 +37,49 @@ MONTHS_RU = [
 
 
 def init_db():
-    conn = sqlite3.connect(DB_PATH)
-    conn.execute('''
-        CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL,
-            email TEXT NOT NULL UNIQUE,
-            password TEXT NOT NULL
-        )
-    ''')
+    with sqlite3.connect(DB_PATH) as conn:
+        # Таблица пользователей
+        conn.execute('''
+            CREATE TABLE IF NOT EXISTS users (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT NOT NULL,
+                email TEXT NOT NULL UNIQUE,
+                password TEXT NOT NULL
+            )
+        ''')
 
-    conn.execute('''
-        CREATE TABLE IF NOT EXISTS moods (
-            date TEXT,
-            mood TEXT,
-            note TEXT,
-            user_id INTEGER NOT NULL,
-            PRIMARY KEY (date, user_id)
-        )
-    ''')
+        # Таблица настроений
+        conn.execute('''
+            CREATE TABLE IF NOT EXISTS moods (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                date TEXT NOT NULL,
+                mood TEXT NOT NULL,
+                note TEXT,
+                user_id INTEGER NOT NULL
+            )
+        ''')
 
-    conn.execute('''
-        CREATE TABLE IF NOT EXISTS steps (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            date TEXT NOT NULL,
-            count INTEGER NOT NULL,
-            user_id INTEGER NOT NULL
-        )
-    ''')
+        # Таблица шагов
+        conn.execute('''
+            CREATE TABLE IF NOT EXISTS steps (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                date TEXT NOT NULL,
+                count INTEGER NOT NULL,
+                user_id INTEGER NOT NULL
+            )
+        ''')
 
-    conn.execute('''
-        CREATE TABLE IF NOT EXISTS sleep (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            date TEXT NOT NULL,
-            hours REAL NOT NULL,
-            user_id INTEGER NOT NULL
-        )
-    ''')
+        # Таблица сна
+        conn.execute('''
+            CREATE TABLE IF NOT EXISTS sleep (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                date TEXT NOT NULL,
+                hours REAL NOT NULL,
+                user_id INTEGER NOT NULL
+            )
+        ''')
 
-    conn.commit()
-    conn.close()
-
+        conn.commit()
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -383,5 +384,6 @@ def stats():
 
 
 if __name__ == '__main__':
-    init_db()  # создаёт БД, если нет
+    init_db()  # создаёт таблицы, если нет
     app.run(debug=True)
+
